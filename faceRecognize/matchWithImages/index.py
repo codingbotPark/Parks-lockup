@@ -8,15 +8,19 @@ image_to_be_matched = face_recognition.load_image_file('my_image.jpg')
 image_to_be_matched_encoded = face_recognition.face_encodings(image_to_be_matched)[0]
 
 ext=['jpg','png','gif','jpeg']
-for filename in os.listdir('images '):
-    if filename.split(".")[-1] in ext:
-        Image.open(f'{"images"}/{filename}').save(f'{"realImages"}/{filename}', 'png')
+# for filename in os.listdir('images'):
+#     if filename.split(".")[-1] in ext:
+#         Image.open(f'{"images"}/{filename}').save(f'{"realImages"}/{filename}', 'png')
 
-realImages = os.listdir("realImages")
+realImages = os.listdir("images")
+# realImages = os.listdir("realImages")
 
 # iterate over each image
 for image in realImages:
     # load the image
+    if (image.split(".")[-1] not in ext):
+        continue
+
     current_image = face_recognition.load_image_file("images/" + image)
     # encode the loaded image into a feature vector
     

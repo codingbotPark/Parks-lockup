@@ -72,12 +72,11 @@ while True:
                 print(stack)
                 if stack > 10:
                     try:
-                        res = requests.get("http://10.255.255.148:5432/face/true")
+                        res = requests.get("http://192.168.151.232:5132/face/true")
                     except:
                         print("err")
-                    print(res)
-                    cv2.putText(image,"request",(250, 700), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 0, 0), 2)
-                    cv2.imShow('Face Cropper',image)
+                    # cv2.putText(image,"request",(250, 700), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 0, 0), 2)
+                    # cv2.imShow('Face Cropper',image)
                     stack = 0
 
         else:
