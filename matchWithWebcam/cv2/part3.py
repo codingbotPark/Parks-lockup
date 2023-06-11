@@ -5,7 +5,7 @@ from os.path import isfile, join
 import requests
 
 
-data_path = './faces/'
+data_path = './faces'
 onlyfiles = [f for f in listdir(data_path) if isfile(join(data_path,f))]
 
 Training_Data, Labels = [], []

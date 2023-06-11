@@ -1,13 +1,14 @@
 import cv2
 import numpy as np
 
-face_classifier = cv2.CascadeClassifier(cv2.data.haarcascades+'f.xml')
+face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
 
 
 def face_extractor(img):
 
     gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-    faces = face_classifier.detectMultiScale(gray,1.3,5)
+    faces = face_cascade.detectMultiScale(gray,1.3,5)
 
     if faces is():
         return None
@@ -37,7 +38,7 @@ while True:
         print("Face not Found")
         pass
 
-    if cv2.waitKey(1)==13 or count==1000:
+    if cv2.waitKey(1)==13 or count==5000:
         break
 
 cap.release()
