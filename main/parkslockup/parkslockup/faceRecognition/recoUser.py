@@ -44,42 +44,28 @@ def compareWithWebCam(encodedFaces):
             face_encodings = face_recognition.face_encodings(rgb_small_frame, face_locations)
 
             face_names = []
-            for face_encoding in face_encodings:
-                # 등록된 얼굴과 비슷한 얼굴들을 비교한다
-                matches = face_recognition.compare_faces(encodedFaces,  face_encoding)
-                
-                name = "Unknown"
 
-                # face_distance 는 얼굴 랜드마크간의 차이를 벡터로 나타낸다
+            # 여러 개의 얼굴을 비교한다
+            for face_encoding in face_encodings:
+
+                # face_distance 는 얼굴 랜드마크간의 차이를 벡터로 나타낸다, 보통 한 0.45 정도 나오면 그 사람이다
                 face_distances = face_recognition.face_distance(encodedFaces,face_encoding)
+                print("faceDistance",face_distances)
+
                 # np.argmin 으로 그 벡터값들 중 가장 작은값(차이가 적은값)을 가져온다
                 best_match_index = np.argmin(face_distances)
-                if matches[best_match_index]:
+
+                # 0.40 라면 그 사람일 확률이 높다
+                name = "Unknown"
+                if face_distances[best_match_index] < 0.4:
                     name = getFileNameFromRegisterlist(best_match_index)
-            
+                    
                 face_names.append(name)
 
         # display 작업할 때는 faceCompare 작업이 실행되지 않도록 한다
         process_this_frame = not process_this_frame
 
-        # Display the results
-        for (top, right, bottom, left), name in zip(face_locations, face_names):
-            # Scale back up face locations since the frame we detected in was scaled to 1/4 size
-            top *= 4
-            right *= 4
-            bottom *= 4
-            left *= 4
-
-            # Draw a box around the face
-            cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
-
-            # Draw a label with a name below the face
-            cv2.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 0, 255), cv2.FILLED)
-            font = cv2.FONT_HERSHEY_DUPLEX
-            namedUtf8 = name.encode('utf-8').decode('utf-8')
-            print(name)
-            print(namedUtf8)
-            cv2.putText (frame, namedUtf8, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
+        displayRectangle(frame,face_locations,face_names)
 
         # Display the resulting image
         cv2.imshow('Video', frame)
@@ -97,4 +83,18 @@ def getFileNameFromRegisterlist(index):
     return withoutExten.split('/')[-1]
 
 
-            
+def displayRectangle(frame,face_locations,face_names):
+     for (top, right, bottom, left), name in zip(face_locations, face_names):
+            top *= 4
+            right *= 4
+            bottom *= 4
+            left *= 4
+
+            cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
+
+            cv2.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 0, 255), cv2.FILLED)
+            font = cv2.FONT_HERSHEY_DUPLEX
+            namedUtf8 = name.encode('utf-8').decode('utf-8')
+            print(name)
+            print(namedUtf8)
+            cv2.putText (frame, namedUtf8, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
