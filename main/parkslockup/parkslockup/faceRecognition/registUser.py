@@ -10,7 +10,7 @@ registerList = [
 def registImgs():
     encodedImgs = list(map(encodingImg,registerList))
     makeExel(encodedImgs)
-
+    
 
 def encodingImg(path):
     loadedImg = face_recognition.load_image_file(path)
