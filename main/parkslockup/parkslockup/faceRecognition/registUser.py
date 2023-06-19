@@ -1,6 +1,5 @@
 import face_recognition
 from openpyxl import Workbook
-
 import os
 
 
@@ -10,16 +9,18 @@ fileExtension = [
     '.png',
     '.jpeg'
 ]
-
+# registImgs 는 __init__.py 에 의해 호출된다, 이에따른 경로를 설정
+imgDirPath = "./imgs"
 def loadFile(file,dir):
     # .jpg, .png, .jpeg 파일만 로드
     if '.' + file.split('.')[-1] in fileExtension:
         return os.path.join(dir,file)
-    
+registerList = list(map(lambda file:loadFile(file,imgDirPath),os.listdir(imgDirPath)))
+
+
+# --------
 
 def registImgs():
-    # registImgs 는 __init__.py 에 의해 호출되기 때문에, 이에따른 경로를 설정
-    registerList = list(map(lambda file:loadFile(file,'./imgs'),os.listdir('./imgs')))
     print(registerList)
     encodedImgs = list(map(encodingImg,registerList))
     makeExel(encodedImgs,registerList)
