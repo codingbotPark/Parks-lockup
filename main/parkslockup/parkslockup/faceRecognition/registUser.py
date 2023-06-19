@@ -3,8 +3,7 @@ from openpyxl import Workbook
 
 
 registerList = [
-    './imgs/박병관.jpg',
-    './imgs/박병관2.jpg'
+    './imgs/ParkByoungkwan.jpg',
 ]
 
 def registImgs():
@@ -32,5 +31,6 @@ def makeExel(imgArray):
     for row_idx, row in enumerate(imgArray, start=1):
         for col_idx, value in enumerate(row, start=1):
             ws.cell(row=row_idx, column=col_idx, value=value)
+        print(registerList[row_idx-1],"등록")
     workbook.save('user.xlsx')
     

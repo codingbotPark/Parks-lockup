@@ -45,12 +45,16 @@ def compareWithWebCam(encodedFaces):
 
             face_names = []
 
+
+            # 웹캠에서 발견된 하나의 얼굴만 사용한다
+            face_encoding = useOnlyOneFace(face_encodings)
+
             # 여러 개의 얼굴을 비교한다
             for face_encoding in face_encodings:
 
                 # face_distance 는 얼굴 랜드마크간의 차이를 벡터로 나타낸다, 보통 한 0.45 정도 나오면 그 사람이다
                 face_distances = face_recognition.face_distance(encodedFaces,face_encoding)
-                print("faceDistance",face_distances)
+                # print("faceDistance",face_distances)
 
                 # np.argmin 으로 그 벡터값들 중 가장 작은값(차이가 적은값)을 가져온다
                 best_match_index = np.argmin(face_distances)
@@ -61,20 +65,17 @@ def compareWithWebCam(encodedFaces):
                     name = getFileNameFromRegisterlist(best_match_index)
                     
                 face_names.append(name)
+                compareBefore(face_names)
+
 
         # display 작업할 때는 faceCompare 작업이 실행되지 않도록 한다
         process_this_frame = not process_this_frame
-
         displayRectangle(frame,face_locations,face_names)
-
-        # Display the resulting image
         cv2.imshow('Video', frame)
 
-        # Hit 'q' on the keyboard to quit!
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
-    # Release handle to the webcam
     video_capture.release()
     cv2.destroyAllWindows()
 
@@ -94,7 +95,30 @@ def displayRectangle(frame,face_locations,face_names):
 
             cv2.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 0, 255), cv2.FILLED)
             font = cv2.FONT_HERSHEY_DUPLEX
-            namedUtf8 = name.encode('utf-8').decode('utf-8')
-            print(name)
-            print(namedUtf8)
-            cv2.putText (frame, namedUtf8, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
+            # namedUtf8 = name.encode('utf-8').decode('utf-8')
+            # print(namedUtf8)
+            cv2.putText (frame, name, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
+
+
+def useOnlyOneFace(face_encodings):
+    return [face_encodings[0]] if len(face_encodings) else face_encodings
+
+# 몇 초 동안 그사람의 얼굴이 인식되었나
+faceCounter = {
+    'counter':0,
+    'name':''
+}
+def compareBefore(face_names):
+    if (faceCounter['name'] == face_names[0]):
+        faceCounter['counter']+=1
+        print(faceCounter['counter'])
+        
+        if (faceCounter['counter'] > 10):
+            print("문열림 요청")
+            faceCounter['counter'] = 0
+            faceCounter['name'] = ''
+            
+    else:
+        faceCounter['counter']=0
+        faceCounter['name'] = '' if face_names[0] == 'Unknown' else face_names[0]
+        
