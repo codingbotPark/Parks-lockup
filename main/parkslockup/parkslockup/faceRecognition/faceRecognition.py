@@ -3,8 +3,8 @@ import registUser
 import recoUser
 
 def execute():
-    # registUser.registImgs()
-    recoUser.execute()
+    registUser.registImgs()
+    # recoUser.execute()
     
 
 
