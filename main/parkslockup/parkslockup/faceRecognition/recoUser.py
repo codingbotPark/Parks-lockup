@@ -68,6 +68,7 @@ def compareWithWebCam(encodedFaces,encodedUserNames):
                 # np.argmin 으로 그 벡터값들 중 가장 작은값(차이가 적은값)을 가져온다
                 best_match_index = np.argmin(face_distances)
 
+                print('유사도',face_distances[best_match_index])
                 # 0.40 라면 그 사람일 확률이 높다
                 name = "Unknown"
                 if face_distances[best_match_index] < 0.4:
