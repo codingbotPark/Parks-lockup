@@ -2,26 +2,36 @@ import cv2
 import face_recognition
 from openpyxl import load_workbook
 import numpy as np
-import registUser
 
 
 
 def execute():
-    encodedFaces = loadEncodedImg()
-    compareWithWebCam(encodedFaces)
+    loadedValue = loadEncodedImg()
+    encodedFaces = loadedValue['encodedFaces']
+    encodedUserNames = loadedValue['encodedUserNames']
+    compareWithWebCam(encodedFaces,encodedUserNames)
 
+# 이름까지 엑셀 파일에 저장한다
 def loadEncodedImg():
     wb = load_workbook('user.xlsx')
     ws = wb.active
     
     encodedFaces = []
+    encodedUserNames = []
+    # for row,idx in ws.iter_rows(values_only=True):
+    #     print(row)
+
     for row in ws.iter_rows(values_only=True):
-        encodedFaces.append(np.array(row))
-    # np.array 로 이루어진 배열
-    return encodedFaces
+        encodedUserNames.append(row[0])
+        encodedFaces.append(np.array(row[1:]))
+        # np.array 로 이루어진 배열
+    return {
+        'encodedFaces':encodedFaces,
+        'encodedUserNames':encodedUserNames
+        }
 
 
-def compareWithWebCam(encodedFaces):
+def compareWithWebCam(encodedFaces,encodedUserNames):
     video_capture = cv2.VideoCapture(0)
 
     face_locations = []
@@ -45,9 +55,8 @@ def compareWithWebCam(encodedFaces):
 
             face_names = []
 
-
-            # 웹캠에서 발견된 하나의 얼굴만 사용한다
-            face_encoding = useOnlyOneFace(face_encodings)
+            # # 웹캠에서 발견된 하나의 얼굴만 사용한다
+            # face_encoding = useOnlyOneFace(face_encodings)
 
             # 여러 개의 얼굴을 비교한다
             for face_encoding in face_encodings:
@@ -62,7 +71,8 @@ def compareWithWebCam(encodedFaces):
                 # 0.40 라면 그 사람일 확률이 높다
                 name = "Unknown"
                 if face_distances[best_match_index] < 0.4:
-                    name = getFileNameFromRegisterlist(best_match_index)
+                    # name = getFileNameFromPath(best_match_index)
+                    name = encodedUserNames[best_match_index]
                     
                 face_names.append(name)
                 compareBefore(face_names)
@@ -78,10 +88,6 @@ def compareWithWebCam(encodedFaces):
 
     video_capture.release()
     cv2.destroyAllWindows()
-
-def getFileNameFromRegisterlist(index):
-    withoutExten = registUser.registerList[index].split(".")[1]
-    return withoutExten.split('/')[-1]
 
 
 def displayRectangle(frame,face_locations,face_names):
