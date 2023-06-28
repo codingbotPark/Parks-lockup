@@ -10,7 +10,7 @@ def execute():
     encodedFaces = loadedValue['encodedFaces']
     encodedUserNames = loadedValue['encodedUserNames']
     compareWithWebCam(encodedFaces,encodedUserNames)
-
+ 
 # 이름까지 엑셀 파일에 저장한다
 def loadEncodedImg():
     wb = load_workbook('user.xlsx')
