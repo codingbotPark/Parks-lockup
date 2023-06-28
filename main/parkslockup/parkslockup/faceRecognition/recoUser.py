@@ -2,7 +2,7 @@ import cv2
 import face_recognition
 from openpyxl import load_workbook
 import numpy as np
-
+import requests
 
 
 def execute():
@@ -33,6 +33,16 @@ def loadEncodedImg():
 
 def compareWithWebCam(encodedFaces,encodedUserNames):
     video_capture = cv2.VideoCapture(0)
+    video_capture.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+    video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+
+    print("-----")
+    print(video_capture.isOpened())
+    print("-----")
+
+    if not video_capture.isOpened():
+        print("웹캠을 열 수 없습니다.")
+        return
 
     face_locations = []
     face_encodings = []
@@ -120,8 +130,10 @@ def compareBefore(face_names):
         faceCounter['counter']+=1
         print(faceCounter['counter'])
         
-        if (faceCounter['counter'] > 10):
+        if (faceCounter['counter'] > 5):
             print("문열림 요청")
+            r = requests.get('http://ip:포트/door/on')
+            print(r)
             faceCounter['counter'] = 0
             faceCounter['name'] = ''
             
