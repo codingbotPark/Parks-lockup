@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { styled, keyframes } from "styled-components";
 // import doorimg from "./door.png";
@@ -101,6 +102,10 @@ function App() {
     console.log("확인", door);
   }, [door]);
 
+  function openDoor() {
+    axios.get("http://10.255.255.136:5050/door/open");
+  }
+
   return (
     <Container>
       <DoorContainer>
@@ -113,7 +118,7 @@ function App() {
           src="https://marshallku.github.io/css-3d-door/door.png"
           doorstate={door}
         />
-        <div onClick={() => setDoor("열림")}>열림</div>
+        <div onClick={() => openDoor()}>열림</div>
         <div onClick={() => setDoor("닫힘")}>닫힘</div>
       </DoorContainer>
     </Container>
