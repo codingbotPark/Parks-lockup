@@ -49,19 +49,14 @@ function App() {
     height: 800px;
     background-color: #ccc;
     transform-origin: left center;
-    animation: ${(props) => (!props.doorstate ? openAnimation : closeAnimation)}
+    animation: ${(props) =>
+        props.doorstate === "열림" ? openAnimation : closeAnimation}
       1s linear forwards;
   `;
 
-  const [message, setMessage] = useState("");
-
-  const [door, setDoor] = useState(true); // false는 opened, true는 closed
+  const [door, setDoor] = useState("닫힘"); // false는 opened, true는 closed
 
   // const decoder = new TextDecoder("utf-8");
-
-  useEffect(() => {
-    console.log(message);
-  }, [message]);
 
   useEffect(() => {
     let socket = new WebSocket("ws://10.255.255.136:5050/ws");
@@ -76,8 +71,14 @@ function App() {
       // alert(`[message] 서버로부터 전송받은 데이터: ${event.data}`);
       // const res = decoder.decode(event.data);
       const res = event.data;
-      setMessage(res);
-      console.log(res);
+      const temp = res === "true" ? true : false;
+      if (temp) {
+        setDoor("열림");
+        console.log("열림");
+      } else {
+        setDoor("닫힘");
+        console.log("닫힘");
+      }
     };
 
     socket.onclose = function (event) {
@@ -96,6 +97,10 @@ function App() {
     };
   }, []);
 
+  useEffect(() => {
+    console.log("확인", door);
+  }, [door]);
+
   return (
     <Container>
       <DoorContainer>
@@ -108,8 +113,8 @@ function App() {
           src="https://marshallku.github.io/css-3d-door/door.png"
           doorstate={door}
         />
-        <div onClick={() => setDoor(false)}>열림</div>
-        <div onClick={() => setDoor(true)}>닫힘</div>
+        <div onClick={() => setDoor("열림")}>열림</div>
+        <div onClick={() => setDoor("닫힘")}>닫힘</div>
       </DoorContainer>
     </Container>
   );
